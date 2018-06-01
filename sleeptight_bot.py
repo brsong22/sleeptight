@@ -60,6 +60,7 @@ class sleeptight_bot:
 			f_old_stories_stories = open("visited_posts.txt", "r+")
 		except IOError:
 			f_old_stories_stories = open("visited_posts.txt", "w+")
+
 		return f_old_stories_stories
 
 	def __save_new_stories(self):
@@ -72,21 +73,28 @@ class sleeptight_bot:
 		except IOError:
 			f_bot_subs = open("sleeptightbot_subs.txt", "w+")
 		return f_bot_subs
-		# unread_messages = self.__bot.inbox.unread(limit=None)
-		# for msg in unread_messages:
-		# 	print(msg.author)
 
 	def __get_new_subscribers(self):
 		unread_messages = self.__bot.inbox.unread(limit=None)
-		# new_subs = []
-		# for msg in unread_messages:
-		# 	if msg.subject == "subscribe" and not msg.author in self.__bot_subs:
-		# 		self.__bot_subs += msg.author
-		# sub_list = 
+		new_subs = []
+		for msg in unread_messages:
+			if msg.subject == "subscribe" and not msg.author.name in self.__bot_subs:
+				new_subs.append(msg.author.name)
+		if len(new_subs) > 0:
+			self.__save_new_subs(new_subs)
+	def get_subs(self):
+		return self.__bot_subs
+
+	def __save_new_subs(self, subs_list):
+		self.__bot_subs += subs_list
+		subs = ",".join([s for s in subs_list])
+		self.__f_bot_subs.write("{0}{1}".format(self.__subs_delim, subs))
 
 
 
-		
+
 nosleep = sleeptight_bot()
 nosleep.get_top_posts_day(3)
-nosleep.send_reddit_pm('songbirdy')
+
+for subs in nosleep.get_subs():
+	nosleep.send_reddit_pm(subs)
