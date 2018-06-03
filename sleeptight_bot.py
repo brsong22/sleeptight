@@ -96,5 +96,8 @@ class sleeptight_bot:
 nosleep = sleeptight_bot()
 nosleep.get_top_posts_day(3)
 
-for subs in nosleep.get_subs():
-	nosleep.send_reddit_pm(subs)
+subs = nosleep.get_subs()
+if len(subs) > 0:
+	for s in subs:
+		print(s)
+		nosleep.send_reddit_pm(s)
